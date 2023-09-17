@@ -28,7 +28,6 @@ main() {
   exit 0
 }
 
-
 # ------------------------------------------------------------------------------
 # Commands
 # ------------------------------------------------------------------------------
@@ -46,24 +45,23 @@ build() {
 }
 
 publish() {
-
+  # Extract current version
   grep 'version = "0.0.0.([0-9]+)"' pyproject.toml
   version=$(awk -F'"' '/^version =/ {print $2}' pyproject.toml)
-  echo "version=$version"
+
+  # Chop up the version string
   majorversion=$(echo $version | cut -d'.' -f1-3)
-  echo "majorversion=$majorversion"
   minorversion=$(echo $version | cut -d'.' -f4)
-  echo "minorversion=$minorversion"
+
+  # Advance the minor version number
   new_mversion=$((minorversion + 1))
-  echo "new_mversion=$new_mversion"
-
   new_version="$majorversion.$new_mversion"
-  echo "new_version=$new_version"
 
+  # Update the .toml file
+  sed -i s/version.*=.*/version\ =\ \"$new_version\"/ pyproject.toml
 
-
-  sed 's/version.*=.*/version=$new_version/' pyproject.toml
-#  poetry publish --build
+  # Build and publish
+  poetry publish --build
 }
 
 print_help() {
