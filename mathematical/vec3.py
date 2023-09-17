@@ -1,10 +1,15 @@
 import itertools
 import operator
+from collections.abc import Iterator
 
 import numpy as np
 
-from util import typeutils
+from marvelous.util.typeutils import *
 
+
+def is_iterator(obj):
+    # TODO Move function to MarvelousPy library
+    return isinstance(obj, Iterator)
 
 class Vec3:
 
@@ -23,8 +28,8 @@ class Vec3:
 
     @staticmethod
     def new(data):
-        if is_iterable(data):
-            data = itertools.islice(data, 3)
+        if is_iterator(data):
+            data = list(itertools.islice(data, 3))
         elif not is_list(data):
             return None
 
@@ -60,9 +65,16 @@ class Vec3:
         return Vec3(zip(self.as_array(), vec.as_array()))
 
     def zipo(self, vec, op=operator.mul):
+        """Zip two vectors applying an operator between consecutive items."""
         return Vec3.new([op(a, b) for a, b in zip(self.as_array(), vec.as_array())])
 
     def zipd(self, vec):
+        """
+        Zip two vectors to form a dictionary.
+
+        :return:
+            Dictionary with values from this vector as keys, values of other vector as values.
+        """
         return dict(zip(self.as_array(), vec.as_array()))
 
     # --------------------------------------------------------------------------
@@ -100,6 +112,6 @@ class Vec3:
         c = np.cross(self.as_array(), vec.as_array())
         return Vec3(c[0], c[1], c[2])
 
-    @staticmethod
-    def cross(a, b):
-        return a.cross(b)
+    # @staticmethod
+    # def cross(a, b):
+    #     return a.cross(b)
