@@ -1,18 +1,12 @@
 import itertools
 import operator
-from collections.abc import Iterator
 
 import numpy as np
 
 from marvelous.util.typeutils import *
 
 
-def is_iterator(obj):
-    # TODO Move function to MarvelousPy library
-    return isinstance(obj, Iterator)
-
 class Vec3:
-
 
     # --------------------------------------------------------------------------
     # Builders
@@ -53,16 +47,15 @@ class Vec3:
     def from_matrix_col(mat, col):
         return Vec3.from_list(mat[:, col])
 
-
     # --------------------------------------------------------------------------
     # Casting and conversions
     # --------------------------------------------------------------------------
 
     def as_array(self):
-        return np.array([self.x, self.y, self.z])
+        return [self.x, self.y, self.z]
 
     def zip(self, vec):
-        return Vec3(zip(self.as_array(), vec.as_array()))
+        return Vec3.new(zip(self.as_array(), vec.as_array()))
 
     def zipo(self, vec, op=operator.mul):
         """Zip two vectors applying an operator between consecutive items."""
