@@ -72,8 +72,8 @@ voices <command> <args>
 Commands marked with [root] need to be run as root.
 
 Commands:
-  refresh           Refresh central poetry cache
-  update            Update development dependencies
+  refresh           Refresh central poetry cache.
+  update            Update development dependencies.
   build             Build the package locally.
   publish           Update the version number, build and publish the package.
   help              Print this help information.
