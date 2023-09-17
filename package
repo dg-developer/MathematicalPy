@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Description
+# ------------------------------------------------------------------------------
+
+# Run various packaging commands.
+
+# ------------------------------------------------------------------------------
+# Process Arguments
+# ------------------------------------------------------------------------------
+
+main() {
+
+  # Handle only the first command passed into the script
+  case $1 in
+    refresh) refresh;;
+    update) update;;
+    build) build;;
+    publish) publish;;
+    help) print_help;;
+    --help) print_help;;
+    *) print_help;;
+
+  esac;
+
+  # Exit with code
+  exit 0
+}
+
+
+# ------------------------------------------------------------------------------
+# Commands
+# ------------------------------------------------------------------------------
+
+refresh() {
+  poetry cache clear pypi --all
+}
+
+update() {
+  poetry add MarvelousPy@latest
+}
+
+build() {
+  poetry build
+}
+
+publish() {
+
+  grep 'version = "0.0.0.([0-9]+)"' pyproject.toml
+  version=$(awk -F'"' '/^version =/ {print $2}' pyproject.toml)
+  echo "version=$version"
+  majorversion=$(echo $version | cut -d'.' -f1-3)
+  echo "majorversion=$majorversion"
+  minorversion=$(echo $version | cut -d'.' -f4)
+  echo "minorversion=$minorversion"
+  new_mversion=$((minorversion + 1))
+  echo "new_mversion=$new_mversion"
+
+  new_version="$majorversion.$new_mversion"
+  echo "new_version=$new_version"
+
+
+
+  sed 's/version.*=.*/version=$new_version/' pyproject.toml
+#  poetry publish --build
+}
+
+print_help() {
+cat <<'_HELP_TEXT'
+
+voices <command> <args>
+
+Commands marked with [root] need to be run as root.
+
+Commands:
+  refresh           Refresh central poetry cache
+  update            Update development dependencies
+  build             Build the package locally.
+  publish           Update the version number, build and publish the package.
+  help              Print this help information.
+
+_HELP_TEXT
+}
+
+# ------------------------------------------------------------------------------
+# Run
+# ------------------------------------------------------------------------------
+
+# Execute the script with forward-declared functions
+main $@

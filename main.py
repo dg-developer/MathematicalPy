@@ -1,4 +1,4 @@
-from mathematical.Vec3 import Vec3
+from mathematical.vec3 import Vec3
 
 
 def main():
